@@ -28,16 +28,18 @@ class_obj = {
 }
 
 # Define the ingestion function
+# Schema for CSV: index,name,description,author,year
 def ingest_vectors(row):
 
   recordid = client.data_object.create(
     class_name="QuestionV",
     data_object={
-        "answer": row['answer'],
-        "category": row['category'],
-        "question": row['question'],
+        "title": row['name'],
+        "description": row['description'],
+        "author": row['author'],
+        "year": row['year'],
     },
-    vector = [0.12345] * 1536
+    vector = row['embedding']
     )
 
   print(f'Ingested vector record id: "{recordid}"...')

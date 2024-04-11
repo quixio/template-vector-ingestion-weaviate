@@ -16,6 +16,11 @@ variables:
     description: ''
     defaultValue: books-catalog
     required: false
+  - name: weaviate_apikey
+    inputType: Secret
+    description: ''
+    defaultValue: weaviate_apikey
+    required: false
 dockerfile: dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

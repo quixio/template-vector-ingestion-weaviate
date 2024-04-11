@@ -2,8 +2,9 @@
  
 # Import the supplimentary Quix Streams modules for interacting with Kafka: 
 from quixstreams.kafka import Producer
-from quixstreams.platforms.quix import QuixKafkaConfigsBuilder, TopicCreationConfigs
-from quixstreams.models.serializers.quix import JSONSerializer, QuixSerializer, SerializationContext
+from quixstreams import Application
+from quixstreams.models.serializers.quix import JSONSerializer
+from quixstreams.models.serializers.quix import SerializationContext
 
 # (see https://quix.io/docs/quix-streams/v2-0-latest/api-reference/quixstreams.html for more details)
 

@@ -3,9 +3,13 @@ from sentence_transformers import SentenceTransformer
 import weaviate
 import os
 
-qdrant = QdrantClient(
-    url="https://620342be-1e5e-401c-98da-42bcaddaed57.us-east4-0.gcp.cloud.qdrant.io:6333", 
-    api_key=os.environ['qdrant_apikey'],
+#  Initialize the Weaviate client. Replace the placeholder values with your actual Weaviate instance details.
+client = weaviate.Client(
+    url="https://quix-template-viv8pz43.weaviate.network",
+    auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API KEY"]),
+    additional_headers={
+        "X-OpenAI-Api-Key": os.environ["OPENAI_API_KEY"]
+    }
 )
 
 encoder = SentenceTransformer('all-MiniLM-L6-v2') # Model to create embeddings

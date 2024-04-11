@@ -12,33 +12,35 @@ client = weaviate.Client(
     }
 )
 
-encoder = SentenceTransformer('all-MiniLM-L6-v2') # Model to create embeddings
 collection = os.environ['collectionname']
 
-# Create collection to store items
-qdrant.recreate_collection(
-    collection_name=collection,
-    vectors_config=models.VectorParams(
-        size=encoder.get_sentence_embedding_dimension(), # Vector size is defined by used model
-        distance=models.Distance.COSINE
-    )
-)
+# Create a class AKA "collection"
+if client.schema.exists(collection):
+    client.schema.delete_class(collection)
+
+# Configure the class AKA "collection"
+class_obj = {
+    "class": collection,
+    "vectorizer": "none", # Not using Weaviates in-built vectorization to demonstrate decoupling of vector creation from ingestion
+    "moduleConfig": {
+        "generative-openai": {}  # Use `generative-openai` module for generative queries
+    }
+}
 
 # Define the ingestion function
 def ingest_vectors(row):
 
-  single_record = models.PointStruct(
-    id=row['doc_uuid'],
-    vector=row['embeddings'],
-    payload=row
+  recordid = client.data_object.create(
+    class_name="QuestionV",
+    data_object={
+        "answer": row['answer'],
+        "category": row['category'],
+        "question": row['question'],
+    },
+    vector = [0.12345] * 1536
     )
 
-  qdrant.upload_points(
-      collection_name=collection,
-      points=[single_record]
-    )
-
-  print(f'Ingested vector entry id: "{row["doc_uuid"]}"...')
+  print(f'Ingested vector record id: "{recordid}"...')
 
 app = Application(
     "vectorizer",
@@ -47,7 +49,7 @@ app = Application(
 )
 
 # Define an input topic with JSON deserializer
-input_topic = app.topic(os.environ['input'], value_deserializer="json") # Merlin.. i updated this for you
+input_topic = app.topic(os.environ['input'], value_deserializer="json")
 
 # Initialize a streaming dataframe based on the stream of messages from the input topic:
 sdf = app.dataframe(topic=input_topic)

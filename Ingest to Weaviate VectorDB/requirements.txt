@@ -1,3 +1,0 @@
-quixstreams
-sentence_transformers
-qdrant-client

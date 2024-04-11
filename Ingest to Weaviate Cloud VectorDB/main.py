@@ -1,6 +1,6 @@
 from quixstreams import Application
 from sentence_transformers import SentenceTransformer
-from qdrant_client import models, QdrantClient
+import weaviate
 import os
 
 qdrant = QdrantClient(
@@ -36,7 +36,7 @@ def ingest_vectors(row):
 
   print(f'Ingested vector entry id: "{row["doc_uuid"]}"...')
 
-app = Application.Quix(
+app = Application(
     "vectorizer",
     auto_offset_reset="earliest",
     auto_create_topics=True,  # Quix app has an option to auto create topics

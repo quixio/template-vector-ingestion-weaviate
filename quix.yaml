@@ -45,8 +45,8 @@ deployments:
         description: ''
         required: false
         value: documents_pt1.csv
-  - name: Ingest to Qdrant Cloud VectorDB
-    application: Ingest to Qdrant Cloud VectorDB
+  - name: Ingest to Weaviate Cloud VectorDB
+    application: Ingest to Weaviate Cloud VectorDB
     deploymentType: Service
     version: e5186852ffa7106831f5f334a921f05a26ef13bb
     resources:

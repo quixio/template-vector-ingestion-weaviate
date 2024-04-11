@@ -1,2 +1,2 @@
-quixstreams==2.2.0a0
+quixstreams
 sentence_transformers

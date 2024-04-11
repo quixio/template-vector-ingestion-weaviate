@@ -1,4 +1,4 @@
-name: Ingest to Qdrant Cloud VectorDB
+name: Ingest to Weaviate Cloud VectorDB
 language: python
 variables:
   - name: input

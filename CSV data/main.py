@@ -36,20 +36,6 @@ published_total = 0
 # how many times you want to loop through the data
 iterations = 10
 
-# configure/create everything needed to publish data with the Producer class
-
-# Load the relevant configurations from environment variables
-# In Quix Cloud, These variables are already preconfigured with defaults
-# When running locally, you need to define 'Quix__Sdk__Token' as an environment variable
-# Defining 'Quix__Workspace__Id' is also preferable, but often the workspace ID can be inferred.
-cfg_builder = QuixKafkaConfigsBuilder()
-
-# Get the input topic name from an environment variable
-cfgs, topics, _ = cfg_builder.get_confluent_client_configs([os.environ["output"]])
-
-# Create the topic if it doesn't yet exist
-cfg_builder.create_topics([TopicCreationConfigs(name=topics[0])])
-
 # Define a serializer for adding the extra headers
 # here we are using the JSONSerializer
 serializer = JSONSerializer()
@@ -58,22 +44,19 @@ serializer = JSONSerializer()
 # and want to subscribe to data from there, use the QuixSerializer like this:
 # serializer = QuixSerializer()
 
-
-brokers=cfgs.pop("bootstrap.servers")
-
 def publish_row(stream_id: str, row_data: dict):
     global row_counter
     global published_total
     global cfgs
 
     # Initialize a Kafka Producer using the stream ID as the message key
-    with Producer(broker_address=brokers, extra_config=cfgs) as producer:
+    with Producer() as producer:
 
         # serialize the row (dictionary)
-        ser = serializer(value=row_data, ctx=SerializationContext(topic=topics[0]))
+        ser = serializer(value=row_data, ctx=SerializationContext(os.environ['output']))
 
         producer.produce(
-            topic=topics[0],
+            topic=os.environ['output'],
             key=stream_id,
             value=ser,
         )

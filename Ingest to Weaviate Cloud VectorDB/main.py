@@ -36,7 +36,7 @@ def ingest_vectors(row):
         "author": row['author'],
         "year": row['year'],
     },
-    vector = row['embedding']
+    vector = row['embeddings']
     )
 
   print(f'Ingested vector record id: "{recordid}"...')

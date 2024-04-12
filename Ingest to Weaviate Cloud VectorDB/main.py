@@ -4,7 +4,7 @@ import os
 
 #  Initialize the Weaviate client. Replace the placeholder values with your actual Weaviate instance details.
 client = weaviate.Client(
-    url="https://quix-template-viv8pz43.weaviate.network",
+    url=os.environ["weaviate_url"],
     auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API KEY"]),
     additional_headers={
         "X-OpenAI-Api-Key": os.environ["OPENAI_API_KEY"]

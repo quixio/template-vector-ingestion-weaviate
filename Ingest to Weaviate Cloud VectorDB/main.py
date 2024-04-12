@@ -1,5 +1,4 @@
 from quixstreams import Application
-from sentence_transformers import SentenceTransformer
 import weaviate
 import os
 

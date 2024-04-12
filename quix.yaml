@@ -70,11 +70,6 @@ deployments:
         description: ''
         required: false
         value: books-catalog
-      - name: qdrant_apikey
-        inputType: Secret
-        description: ''
-        required: true
-        secretKey: qdrant_apikey
   - name: PT 2 | produce data from CSV
     application: CSV data
     deploymentType: Job
@@ -112,11 +107,6 @@ deployments:
         description: ''
         required: false
         value: books-catalog
-      - name: qdrant_apikey
-        inputType: Secret
-        description: ''
-        required: false
-        secretKey: qdrant_apikey
       - name: qdrant_url
         inputType: FreeText
         description: ''

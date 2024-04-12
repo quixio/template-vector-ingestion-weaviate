@@ -26,6 +26,11 @@ variables:
     description: ''
     defaultValue: openai_apikey
     required: false
+  - name: weaviate_url
+    inputType: FreeText
+    description: ''
+    defaultValue: https://quix-template-viv8pz43.weaviate.network
+    required: false
 dockerfile: dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

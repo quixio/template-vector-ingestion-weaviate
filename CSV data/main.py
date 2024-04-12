@@ -1,151 +1,85 @@
-# This code will publish the CSV data to a stream as if the data were being generated in real-time.
- 
-# Import the supplimentary Quix Streams modules for interacting with Kafka: 
-from quixstreams.kafka import Producer
-from quixstreams import Application
-from quixstreams.models.serializers.quix import JSONSerializer
-from quixstreams.models.serializers.quix import SerializationContext
-
+from quixstreams import Application  # import the Quix Streams modules for interacting with Kafka:
 # (see https://quix.io/docs/quix-streams/v2-0-latest/api-reference/quixstreams.html for more details)
 
-from datetime import datetime
-import pandas as pd
-import threading
+# import additional modules as needed
 import random
-import uuid
-import time
 import os
+import json
+import logging
 
-# import the dotenv module to load environment variables from a file
-from dotenv import load_dotenv
-load_dotenv(override=False)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# True = keep original timings.
-# False = No delay! Speed through it as fast as possible.
-keep_timing = False
-
-# If the process is terminated on the command line or by the container
-# setting this flag to True will tell the loops to stop and the code
-# to exit gracefully.
-shutting_down = False
-
-# counters for the status messages
-row_counter = 0
-published_total = 0
-
-# how many times you want to loop through the data
-iterations = 10
-
-# Define a serializer for adding the extra headers
-# here we are using the JSONSerializer
-serializer = JSONSerializer()
-
-# NOTE: if you have existing services in Quix, possibly using a version of the SDK before v2
-# and want to subscribe to data from there, use the QuixSerializer like this:
-# serializer = QuixSerializer()
-
-def publish_row(stream_id: str, row_data: dict):
-    global row_counter
-    global published_total
-    global cfgs
-
-    # Initialize a Kafka Producer using the stream ID as the message key
-    with Producer() as producer:
-
-        # serialize the row (dictionary)
-        ser = serializer(value=row_data, ctx=SerializationContext(os.environ['output']))
-
-        producer.produce(
-            topic=os.environ['output'],
-            key=stream_id,
-            value=ser,
-        )
-
-    row_counter += 1
-
-    if row_counter == 10:
-        row_counter = 0
-        published_total += 10
-        print(f"Published {published_total} rows")
-    
-
-def process_csv_file(csv_file):
-    global shutting_down
-    global iterations
-
-    # Read the CSV file into a pandas DataFrame
-    print("CSV file loading.")
-
-    df = pd.read_csv(csv_file)
-    print("File loaded.")
-
-    row_count = len(df)
-    print(f"Publishing {row_count * iterations} rows.")
-
-    has_timestamp_column = False
-
-    # If the data contains a 'Timestamp'
-    if "Timestamp" in df:
-        has_timestamp_column = True
-        # keep the original timestamp to ensure the original timing is maintained
-        df = df.rename(columns={"Timestamp": "original_timestamp"})
-        print("Timestamp column renamed.")
+app = Application.Quix(consumer_group="data_source", auto_create_topics=True)  # create an Application
 
 
-    # generate a unique stream id for this data stream
-    stream_id = f"CSV_DATA_{str(random.randint(1, 100)).zfill(3)}"
-
-    # Get the column headers as a list
-    headers = df.columns.tolist()
-        
-    # Iterate over the rows and send them to the API
-    for index, row in df.iterrows():
-
-        # If shutdown has been requested, exit the loop.
-        if shutting_down:
-            break
-
-        # Create a dictionary that includes both column headers and row values
-        row_data = {header: row[header] for header in headers}
-
-        row_data['Timestamp'] = int(time.time() * 1e9)  # add a new timestamp column with the current data and time
-        row_data['doc_uuid'] = str(uuid.uuid4()) # add uuid for vector db entry
-
-        # publish the row via the wrapper function
-        publish_row(stream_id, row_data)
-
-        if not keep_timing or not has_timestamp_column:
-            # Don't want to keep the original timing or no timestamp? Thats ok, just sleep for 200ms
-            time.sleep(0.2)
-        else:
-            # Delay sending the next row if it exists
-            # The delay is calculated using the original timestamps and ensure the data 
-            # is published at a rate similar to the original data rates
-            if index + 1 < len(df):
-                current_timestamp = pd.to_datetime(row['original_timestamp'])
-                next_timestamp = pd.to_datetime(df.at[index + 1, 'original_timestamp'])
-                time_difference = next_timestamp - current_timestamp
-                delay_seconds = time_difference.total_seconds()
-                
-                # handle < 0 delays
-                if delay_seconds < 0:
-                    delay_seconds = 0
-
-                time.sleep(delay_seconds)
+# define the topic using the "output" environment variable
+topic_name = os.environ["output"]
+topic = app.topic(topic_name)
 
 
-# Run the CSV processing in a thread
-processing_thread = threading.Thread(target=process_csv_file, args=(os.environ["csv_file"],))
-processing_thread.start()
+# this function loads the file and sends each row to the publisher
+def get_data():
+    """
+    A function to generate data from a hardcoded dataset in an endless manner.
+    It returns a list of tuples with a message_key and rows
+    """
 
-# Run this method before shutting down.
-# In this case we set a flag to tell the loops to exit gracefully.
-def before_shutdown():
-    global shutting_down
-    print("Shutting down")
+    # define the hardcoded dataset
+    # this data is fake data representing used % of memory allocation over time
+    # there is one row of data every 1 to 2 seconds
+    data = [
+        {"m": "mem", "host": "host1", "used_percent": "64.56", "time": "1577836800000000000"},
+        {"m": "mem", "host": "host2", "used_percent": "71.89", "time": "1577836801000000000"},
+        {"m": "mem", "host": "host1", "used_percent": "63.27", "time": "1577836803000000000"},
+        {"m": "mem", "host": "host2", "used_percent": "73.45", "time": "1577836804000000000"},
+        {"m": "mem", "host": "host1", "used_percent": "62.98", "time": "1577836806000000000"},
+        {"m": "mem", "host": "host2", "used_percent": "74.33", "time": "1577836808000000000"},
+        {"m": "mem", "host": "host1", "used_percent": "65.21", "time": "1577836810000000000"},
+        {"m": "mem", "host": "host2", "used_percent": "70.88", "time": "1577836812000000000"},
+        {"m": "mem", "host": "host1", "used_percent": "64.61", "time": "1577836814000000000"},
+        {"m": "mem", "host": "host2", "used_percent": "72.56", "time": "1577836816000000000"},
+        {"m": "mem", "host": "host1", "used_percent": "63.77", "time": "1577836818000000000"},
+        {"m": "mem", "host": "host2", "used_percent": "73.21", "time": "1577836820000000000"}
+    ]
 
-    # set the flag to True to stop the loops as soon as possible.
-    shutting_down = True
+    # generate a unique ID for this data stream.
+    # it will be used as a message key in Kafka
+    message_key  = f"MESSAGE_KEY_{str(random.randint(1, 100)).zfill(3)}"
+
+    # create a list of tuples with a message_key and row_data
+    data_with_id = [(message_key , row_data) for row_data in data]
+
+    return data_with_id
 
 
-print("Exiting.")
+def main():
+    """
+    Read data from the hardcoded dataset and publish it to Kafka
+    """
+
+    # create a pre-configured Producer object.
+    producer = app.get_producer()
+
+    with producer:
+        # iterate over the data from the hardcoded dataset
+        data_with_id = get_data()
+        for message_key, row_data in data_with_id:
+
+            json_data = json.dumps(row_data)  # convert the row to JSON
+
+            # publish the data to the topic
+            producer.produce(
+                topic=topic.name,
+                key=message_key,
+                value=json_data,
+            )
+
+        logger.info("All rows published")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        logger.info("Exiting.")

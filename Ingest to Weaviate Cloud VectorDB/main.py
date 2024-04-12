@@ -29,7 +29,7 @@ class_obj = {
 def ingest_vectors(row):
 
   recordid = client.data_object.create(
-    class_name="QuestionV",
+    class_name=collection,
     data_object={
         "title": row['name'],
         "description": row['description'],

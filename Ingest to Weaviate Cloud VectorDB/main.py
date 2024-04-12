@@ -21,9 +21,7 @@ if client.schema.exists(collection):
 class_obj = {
     "class": collection,
     "vectorizer": "none", # Not using Weaviates in-built vectorization to demonstrate decoupling of vector creation from ingestion
-    "moduleConfig": {
-        "generative-openai": {}  # Use `generative-openai` module for generative queries
-    }
+    "moduleConfig": {}
 }
 
 # Define the ingestion function

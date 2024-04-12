@@ -92,6 +92,46 @@ deployments:
         description: ''
         required: false
         value: https://quix-template-viv8pz43.weaviate.network
+  - name: Ingest to Weaviate Cloud VectorDB
+    application: Ingest to Weaviate Cloud VectorDB
+    deploymentType: Service
+    version: latest
+    resources:
+      cpu: 500
+      memory: 1000
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for demo data
+        required: true
+        value: embeddings-sbert-v1
+      - name: vectordbname
+        inputType: FreeText
+        description: ''
+        required: true
+        value: quix-demo
+      - name: collectionname
+        inputType: FreeText
+        description: ''
+        required: false
+        value: BooksCatalog
+      - name: WEAVIATE_API_KEY
+        inputType: Secret
+        description: ''
+        required: false
+        secretKey: weaviate_apikey
+      - name: OPENAI_API_KEY
+        inputType: Secret
+        description: ''
+        required: false
+        secretKey: openai_apikey
+      - name: weaviate_url
+        inputType: FreeText
+        description: ''
+        required: false
+        value: https://quix-template-viv8pz43.weaviate.network
 
 # This section describes the Topics of the data pipeline
 topics:

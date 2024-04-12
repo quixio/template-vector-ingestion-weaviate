@@ -42,7 +42,7 @@ def ingest_vectors(row):
   print(f'Ingested vector record id: "{recordid}"...')
 
 app = Application(
-    consumer_group="vectorizer1",
+    consumer_group="vectorizerV1",
     auto_offset_reset="earliest",
     auto_create_topics=True,  # Quix app has an option to auto create topics
 )

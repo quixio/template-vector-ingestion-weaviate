@@ -29,7 +29,7 @@ deployments:
   - name: PT1 | Produce data from CSV
     application: CSV data
     deploymentType: Job
-    version: 2140b020c6b1e92e3eb42095686fdb0e49040838
+    version: latest
     resources:
       cpu: 200
       memory: 500
@@ -100,7 +100,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: dashboard-final
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: collectionname
         inputType: FreeText

@@ -104,6 +104,31 @@ deployments:
         description: ''
         required: false
         value: https://quix-template-viv8pz43.weaviate.network
+  - name: Streamlit dashboard
+    application: Streamlit dashboard
+    deploymentType: Service
+    version: latest
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: collectionname
+        inputType: FreeText
+        description: ''
+        required: false
+        value: BooksCatalog
+      - name: WEAVIATE_API_KEY
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: weaviate_apikey
+      - name: weaviate_url
+        inputType: FreeText
+        description: ''
+        required: false
+        value: https://quix-template-viv8pz43.weaviate.network
 
 # This section describes the Topics of the data pipeline
 topics:

@@ -15,7 +15,7 @@ def create_embeddings(row):
     return embedding_list
 
 app = Application.Quix(
-    "vectorizer2",
+    "vectorizer3",
     auto_offset_reset="earliest"
 )
 

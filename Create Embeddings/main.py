@@ -16,8 +16,7 @@ def create_embeddings(row):
 
 app = Application.Quix(
     "vectorizer2",
-    auto_offset_reset="earliest",
-    auto_create_topics=True,  # Quix app has an option to auto create topics
+    auto_offset_reset="earliest"
 )
 
 # Define an input topic with JSON deserializer

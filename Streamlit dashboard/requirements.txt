@@ -1,3 +1,3 @@
-pip streamlit
+streamlit
 qdrant-client
 sentence_transformers

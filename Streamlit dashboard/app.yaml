@@ -4,7 +4,7 @@ variables:
   - name: collectionname
     inputType: FreeText
     description: ''
-    defaultValue: books-catalog
+    defaultValue: BooksCatalog
     required: false
   - name: WEAVIATE_API_KEY
     inputType: Secret

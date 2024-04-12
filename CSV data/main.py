@@ -27,7 +27,7 @@ def get_data():
     message_key = f"MESSAGE_KEY_{str(random.randint(1, 100)).zfill(3)}"
 
     # Open the CSV file and read each row
-    with open('sample.csv', mode='r') as csvfile:
+    with open(os.environ["csv_file"], mode='r') as csvfile:
         csvreader = csv.DictReader(csvfile)
         for row in csvreader:
             # Assuming each row is a dictionary, similar to the hardcoded data

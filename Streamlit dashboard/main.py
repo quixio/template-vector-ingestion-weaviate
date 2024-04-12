@@ -3,6 +3,7 @@ from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 import os
 import pandas as pd
+import weaviate
 
 # Initialize the sentence transformer model
 encoder = SentenceTransformer('all-MiniLM-L6-v2')  # Model to create embeddings
@@ -18,9 +19,13 @@ try:
     print(f"Using collection name {collectionname}")
 
     # Initialize the QdrantClient
-    qdrant = QdrantClient(
-        url=os.environ['qdrant_url'],
-        api_key=os.environ['qdrant_apikey'],
+    # Initialize the Weaviate client. Replace the placeholder values with your actual Weaviate instance details.
+    client = weaviate.Client(
+        url="https://quix-template-viv8pz43.weaviate.network",
+        auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API KEY"]),
+        additional_headers={
+            "X-OpenAI-Api-Key": os.environ["OPENAI_API_KEY"]
+        }
     )
     # Get the collection to search
     qdrant.get_collection(collection_name=collectionname)
@@ -43,11 +48,16 @@ if search_term != "":
             st.write("Collection is empty")
         else:
             # Query the database
-            search_result = qdrant.search(
-                collection_name=collectionname,
-                query_vector=query_vector,
-                limit=5
+            # Example of a semantic search using nearText search for quiz objects similar to "biology"
+            nearText = {"concepts": ["biology"]}
+            response = (
+                client.query
+                .get("Question", ["question", "answer", "category"])
+                .with_near_text(nearText)
+                .with_limit(2)
+                .do()
             )
+            print(json.dumps(response, indent=4))
 
             # Initialize a list to hold each row of data
             resultdata = []

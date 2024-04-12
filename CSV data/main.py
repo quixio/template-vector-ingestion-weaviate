@@ -57,6 +57,7 @@ def main():
                 key=message_key,
                 value=json_data,
             )
+            logger.info(f"Published KEY: {message_key} | ROW: {json_data}")
 
         logger.info("All rows published")
 

@@ -1,7 +1,6 @@
 from quixstreams import Application
 from sentence_transformers import SentenceTransformer
 import os
-import time
 
 encoder = SentenceTransformer('all-MiniLM-L6-v2') # Model to create embeddings
 

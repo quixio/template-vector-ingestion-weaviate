@@ -1,5 +1,4 @@
 import streamlit as st
-from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 import os
 import pandas as pd
@@ -21,7 +20,7 @@ try:
     # Initialize the QdrantClient
     # Initialize the Weaviate client. Replace the placeholder values with your actual Weaviate instance details.
     client = weaviate.Client(
-        url="",
+        url=os.environ["weaviate_url"],
         auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API KEY"]),
         additional_headers={
             "X-OpenAI-Api-Key": os.environ["OPENAI_API_KEY"]

@@ -64,7 +64,7 @@ if search_term != "":
             resultdata = []
 
             # Iterate through the search results
-            for result in search_result:
+            for res in result:
                 # Extracting data from each result
                 row = {
                     'name': result.payload['name'],

@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer
 import os
 import pandas as pd
 import weaviate
+import json
 
 # Initialize the sentence transformer model
 encoder = SentenceTransformer('all-MiniLM-L6-v2')  # Model to create embeddings
@@ -22,12 +23,9 @@ try:
     client = weaviate.Client(
         url=os.environ["weaviate_url"],
         auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API KEY"]),
-        additional_headers={
-            "X-OpenAI-Api-Key": os.environ["OPENAI_API_KEY"]
-        }
     )
     # Get the collection to search
-    qdrant.get_collection(collection_name=collectionname)
+    # qdrant.get_collection(collection_name=collectionname)
 
 except Exception as e:
     print(f"Exception: {e}")
@@ -42,21 +40,25 @@ if search_term != "":
         # Vectorize the search term
         query_vector = encoder.encode([search_term])[0]
 
-        total_points = qdrant.get_collection(collection_name=collectionname).points_count
+        #total_points = qdrant.get_collection(collection_name=collectionname).points_count
+        total_points = 12 # hardcoded for testing
         if total_points == 0:
             st.write("Collection is empty")
         else:
             # Query the database
             # Example of a semantic search using nearText search for quiz objects similar to "biology"
-            nearText = {"concepts": ["biology"]}
-            response = (
-                client.query
-                .get("Question", ["question", "answer", "category"])
-                .with_near_text(nearText)
-                .with_limit(2)
-                .do()
-            )
-            print(json.dumps(response, indent=4))
+           result = (
+                    client.query
+                    .get("Question", ["question", "answer"])
+                    .with_near_vector({
+                        "vector": oai_embedding,
+                        "certainty": 0.7
+                    })
+                    .with_limit(2)
+                    .do()
+                )
+
+            print(json.dumps(result, indent=4))
 
             # Initialize a list to hold each row of data
             resultdata = []

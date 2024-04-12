@@ -14,7 +14,7 @@ variables:
   - name: weaviate_url
     inputType: FreeText
     description: ''
-    defaultValue: ''
+    defaultValue: https://quix-template-viv8pz43.weaviate.network
     required: false
 dockerfile: dockerfile
 runEntryPoint: main.py

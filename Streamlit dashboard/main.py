@@ -47,17 +47,17 @@ if search_term != "":
         else:
             # Query the database
             # Example of a semantic search using nearText search for quiz objects similar to "biology"
-           result = (
+            result = (
                     client.query
-                    .get("Question", ["question", "answer"])
+                    .get("BookCatalog", ["title", "description"])
                     .with_near_vector({
-                        "vector": oai_embedding,
+                        "vector": query_vector,
                         "certainty": 0.7
                     })
                     .with_limit(2)
                     .do()
                 )
-
+                
             print(json.dumps(result, indent=4))
 
             # Initialize a list to hold each row of data

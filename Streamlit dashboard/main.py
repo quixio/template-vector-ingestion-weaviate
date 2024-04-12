@@ -40,14 +40,14 @@ if search_term != "":
     try:
         # Vectorize the search term
         query_vector = encoder.encode([search_term])[0]
-
+        
+        ## Not sure how to get total entries for Weaviate, so commenting out for now
         # total_points = qdrant.get_collection(collection_name=collectionname).points_count
         total_points = 12  # hardcoded for testing
         if total_points == 0:
             st.write("Collection is empty")
         else:
-            # Query the database
-            # Example of a semantic search using nearText search for quiz objects similar to "biology"
+            # Query the database"
             result = (
                 client.query
                 .get(collectionname, ["title", "description"])

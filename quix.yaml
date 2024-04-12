@@ -14,7 +14,7 @@ deployments:
       cpu: 500
       memory: 1000
       replicas: 1
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: input
         inputType: InputTopic
@@ -92,9 +92,9 @@ deployments:
   - name: Streamlit dashboard
     application: Streamlit dashboard
     deploymentType: Service
-    version: 2140b020c6b1e92e3eb42095686fdb0e49040838
+    version: latest
     resources:
-      cpu: 200
+      cpu: 500
       memory: 1000
       replicas: 1
     publicAccess:
@@ -107,11 +107,16 @@ deployments:
         description: ''
         required: false
         value: books-catalog
-      - name: qdrant_url
+      - name: WEAVIATE_API_KEY
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: weaviate_apikey
+      - name: weaviate_url
         inputType: FreeText
         description: ''
         required: false
-        value: https://620342be-1e5e-401c-98da-42bcaddaed57.us-east4-0.gcp.cloud.qdrant.io:6333
+        value: https://quix-template-viv8pz43.weaviate.network
 
 # This section describes the Topics of the data pipeline
 topics:

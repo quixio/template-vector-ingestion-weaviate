@@ -64,34 +64,6 @@ deployments:
         description: ''
         required: false
         value: documents_pt2.csv
-  - name: Streamlit dashboard
-    application: Streamlit dashboard
-    deploymentType: Service
-    version: latest
-    resources:
-      cpu: 500
-      memory: 1000
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: dashboard-final
-    desiredStatus: Running
-    variables:
-      - name: collectionname
-        inputType: FreeText
-        description: ''
-        required: false
-        value: books-catalog
-      - name: WEAVIATE_API_KEY
-        inputType: Secret
-        description: ''
-        required: true
-        secretKey: weaviate_apikey
-      - name: weaviate_url
-        inputType: FreeText
-        description: ''
-        required: false
-        value: https://quix-template-viv8pz43.weaviate.network
   - name: Ingest to Weaviate Cloud VectorDB
     application: Ingest to Weaviate Cloud VectorDB
     deploymentType: Service

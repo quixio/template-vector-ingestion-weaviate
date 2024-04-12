@@ -9,12 +9,12 @@ deployments:
   - name: Create embeddings
     application: Create Embeddings
     deploymentType: Service
-    version: 2140b020c6b1e92e3eb42095686fdb0e49040838
+    version: latest
     resources:
-      cpu: 200
+      cpu: 500
       memory: 1000
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -53,7 +53,7 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -105,7 +105,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: dashboard-final
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: collectionname
         inputType: FreeText

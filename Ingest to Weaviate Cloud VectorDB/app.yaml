@@ -16,7 +16,7 @@ variables:
     description: ''
     defaultValue: books-catalog
     required: false
-  - name: weaviate_apikey
+  - name: WEAVIATE_API_KEY
     inputType: Secret
     description: ''
     defaultValue: weaviate_apikey
